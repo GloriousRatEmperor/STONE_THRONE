@@ -56,9 +56,11 @@ public class ImGuiLayer {
         ImGui.createContext();
 
         // ------------------------------------------------------------
+
+        // ------------------------------------------------------------
         // Initialize ImGuiIO config
         final ImGuiIO io = ImGui.getIO();
-
+        FileUtil.copyFile("permagui.ini","imgui.ini",true);
         io.setIniFilename("imgui.ini"); // We don't want to save .ini file
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
@@ -237,6 +239,7 @@ public class ImGuiLayer {
 
         ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
         ImGui.popStyleVar(2);
+        ImGui.getStyle().setWindowRounding(0.0F);
 
         // Dockspace
         ImGui.dockSpace(ImGui.getID("Dockspace"));

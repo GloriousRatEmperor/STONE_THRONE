@@ -8,6 +8,7 @@ import observers.events.EventType;
 import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
@@ -107,11 +108,12 @@ public class Window implements Observer {
         // Configure GLFW
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // the window will be resizable
+        long monitor=glfwGetPrimaryMonitor();
+        final GLFWVidMode mode = glfwGetVideoMode(monitor);
         // Create the window
-        glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
+        glfwWindow = glfwCreateWindow(mode.width(), mode.height(), this.title, monitor, NULL);
         if (glfwWindow == NULL) {
             throw new IllegalStateException("Failed to create the GLFW window.");
         }
