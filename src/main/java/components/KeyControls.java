@@ -45,7 +45,7 @@ public class KeyControls extends Component {
                     copy.getComponent(StateMachine.class).refreshTextures();
                 }
             }
-        } else if (KeyListener.keyBeginPress(GLFW_KEY_DELETE)) {
+        } else if (KeyListener.keyBeginPress(GLFW_KEY_DELETE)||KeyListener.keyBeginPress(GLFW_KEY_BACKSPACE)) {
             for (GameObject go : activeGameObjects) {
                 go.destroy();
             }

@@ -171,7 +171,7 @@ public class Scene {
         return go;
     }
 
-    public void save() {
+    public void save(boolean permanent) {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(Component.class, new ComponentDeserializer())
@@ -180,7 +180,13 @@ public class Scene {
                 .create();
 
         try {
-            FileWriter writer = new FileWriter("level.txt");
+            FileWriter writer;
+            if (permanent){
+                writer = new FileWriter("permalevel.txt");
+            }else{
+                writer = new FileWriter("level.txt");
+            }
+
             List<GameObject> objsToSerialize = new ArrayList<>();
             for (GameObject obj : this.gameObjects) {
                 if (obj.doSerialization()) {
@@ -191,6 +197,9 @@ public class Scene {
             writer.close();
         } catch(IOException e) {
             e.printStackTrace();
+        }
+        if(permanent){
+            save(false);
         }
     }
 

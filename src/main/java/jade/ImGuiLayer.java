@@ -41,7 +41,6 @@ public class ImGuiLayer {
         this.glfwWindow = glfwWindow;
         this.gameViewWindow = new GameViewWindow();
         this.propertiesWindow = new PropertiesWindow(pickingTexture);
-        this.menuBar = new MenuBar();
         this.sceneHeirarchyWindow = new SceneHierarchyWindow();
     }
 
@@ -61,6 +60,7 @@ public class ImGuiLayer {
         // Initialize ImGuiIO config
         final ImGuiIO io = ImGui.getIO();
         FileUtil.copyFile("permagui.ini","imgui.ini",true);
+        FileUtil.copyFile("permalevel.txt","level.txt",true);
         io.setIniFilename("imgui.ini"); // We don't want to save .ini file
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
@@ -223,7 +223,7 @@ public class ImGuiLayer {
     }
 
     private void setupDockspace() {
-        int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
+        int windowFlags =  ImGuiWindowFlags.NoDocking;
 
         ImGuiViewport mainViewport = ImGui.getMainViewport();
         ImGui.setNextWindowPos(mainViewport.getWorkPosX(), mainViewport.getWorkPosY());
@@ -244,7 +244,6 @@ public class ImGuiLayer {
         // Dockspace
         ImGui.dockSpace(ImGui.getID("Dockspace"));
 
-        menuBar.imgui();
 
         ImGui.end();
     }
