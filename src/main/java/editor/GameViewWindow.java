@@ -16,6 +16,7 @@ public class GameViewWindow {
     private boolean windowIsHovered;
 
     public void imgui() {
+
         imgui.ImGuiIO io = ImGui.getIO();
         ImGui.setNextWindowSize(io.getDisplaySizeX(),io.getDisplaySizeY());
         ImGui.setNextWindowPos(0,0);
