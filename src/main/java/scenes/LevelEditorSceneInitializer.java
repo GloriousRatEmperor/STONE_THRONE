@@ -99,9 +99,17 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
     @Override
     public void imgui() {
+        imgui.ImGuiIO io = ImGui.getIO();
+
+        ImGui.setNextWindowSize(io.getDisplaySizeX()/4,io.getDisplaySizeY());
+        ImGui.setNextWindowPos(io.getDisplaySizeX()*3/4,0);
+
         ImGui.begin("Level Editor Stuff");
         levelEditorStuff.imgui();
         ImGui.end();
+
+        ImGui.setNextWindowSize(io.getDisplaySizeX(),io.getDisplaySizeY()/5);
+        ImGui.setNextWindowPos(0,io.getDisplaySizeY()/5*4);
 
         ImGui.begin("Test window");
 

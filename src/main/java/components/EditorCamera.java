@@ -5,8 +5,8 @@ import jade.KeyListener;
 import jade.MouseListener;
 import org.joml.Vector2f;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_KP_DECIMAL;
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 
 public class EditorCamera extends Component {
 
@@ -52,7 +52,18 @@ public class EditorCamera extends Component {
         if (KeyListener.isKeyPressed(GLFW_KEY_KP_DECIMAL)) {
             reset = true;
         }
-
+        if (KeyListener.isKeyPressed(GLFW_KEY_A)) {
+            levelEditorCamera.position.add(-0.1f*this.levelEditorCamera.getZoom(),0);
+        }
+        if (KeyListener.isKeyPressed(GLFW_KEY_W)) {
+            levelEditorCamera.position.add(0,0.1f*this.levelEditorCamera.getZoom());
+        }
+        if (KeyListener.isKeyPressed(GLFW_KEY_S)) {
+            levelEditorCamera.position.add(0,-0.1f*this.levelEditorCamera.getZoom());
+        }
+        if (KeyListener.isKeyPressed(GLFW_KEY_D)) {
+            levelEditorCamera.position.add(0.1f*this.levelEditorCamera.getZoom(),0);
+        }
         if (reset) {
             levelEditorCamera.position.lerp(new Vector2f(), lerpTime);
             levelEditorCamera.setZoom(this.levelEditorCamera.getZoom() +

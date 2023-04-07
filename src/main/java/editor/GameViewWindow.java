@@ -21,7 +21,7 @@ public class GameViewWindow {
         ImGui.setNextWindowSize(io.getDisplaySizeX(),io.getDisplaySizeY());
         ImGui.setNextWindowPos(0,0);
         ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse
-                        | ImGuiWindowFlags.MenuBar| ImGuiWindowFlags.NoResize
+                        | ImGuiWindowFlags.MenuBar| ImGuiWindowFlags.NoResize| ImGuiWindowFlags.NoBringToFrontOnFocus
                         | ImGuiWindowFlags.NoTitleBar| ImGuiWindowFlags.NoCollapse| ImGuiWindowFlags.NoDecoration);
 
         ImGui.beginMenuBar();
