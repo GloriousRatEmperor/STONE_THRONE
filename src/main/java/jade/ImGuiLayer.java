@@ -1,9 +1,6 @@
 package jade;
 
-import editor.GameViewWindow;
-import editor.MenuBar;
-import editor.PropertiesWindow;
-import editor.SceneHierarchyWindow;
+import editor.*;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
@@ -26,6 +23,7 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 public class ImGuiLayer {
 
+    private Menu menu;
     private long glfwWindow;
 
     // LWJGL3 renderer (SHOULD be initialized)
@@ -41,6 +39,7 @@ public class ImGuiLayer {
         this.glfwWindow = glfwWindow;
         this.gameViewWindow = new GameViewWindow();
         this.propertiesWindow = new PropertiesWindow(pickingTexture);
+        this.menu = new Menu(pickingTexture);
         this.sceneHeirarchyWindow = new SceneHierarchyWindow();
     }
 
@@ -180,7 +179,7 @@ public class ImGuiLayer {
         imGuiGl3.init("#version 330 core");
     }
 
-    public void update(float dt, Scene currentScene) {
+    public void update(float dt, Scene currentScene,boolean playing) {
         startFrame(dt);
 
         // Any Dear ImGui code SHOULD go between ImGui.newFrame()/ImGui.render() methods
@@ -188,7 +187,11 @@ public class ImGuiLayer {
         currentScene.imgui();
         //ImGui.showDemoWindow();
         gameViewWindow.imgui();
-        propertiesWindow.imgui();
+        if(playing==false) {
+            propertiesWindow.imgui();
+        }else {
+            menu.imgui();
+        }
         sceneHeirarchyWindow.imgui();
 
         endFrame();
@@ -250,5 +253,8 @@ public class ImGuiLayer {
 
     public PropertiesWindow getPropertiesWindow() {
         return this.propertiesWindow;
+    }
+    public Menu getMenu() {
+        return this.menu;
     }
 }

@@ -216,7 +216,7 @@ public class Window implements Observer {
             }
             this.framebuffer.unbind();
 
-            this.imguiLayer.update(dt, currentScene);
+            this.imguiLayer.update(dt, currentScene,runtimePlaying);
 
             KeyListener.endFrame();
             MouseListener.endFrame();
@@ -261,6 +261,7 @@ public class Window implements Observer {
         switch (event.type) {
             case GameEngineStartPlay:
                 this.runtimePlaying = true;
+
                 currentScene.save(false);
                 Window.changeScene(new LevelSceneInitializer());
                 break;

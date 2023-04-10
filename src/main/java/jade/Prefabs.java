@@ -201,7 +201,7 @@ public class Prefabs {
         rb.setFixedRotation(true);
         rb.setMass(25.0f);
         mario.addComponent(rb);
-
+        System.out.println(5);
         mario.addComponent(new PlayerController());
 
         mario.transform.zIndex = 10;

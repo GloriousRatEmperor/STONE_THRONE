@@ -14,13 +14,25 @@ import java.io.File;
 import java.util.Collection;
 
 public class LevelSceneInitializer extends SceneInitializer {
+    private GameObject gamestuff;
     public LevelSceneInitializer() {
 
     }
 
     @Override
     public void init(Scene scene) {
+        //added this
         Spritesheet sprites = AssetPool.getSpritesheet("assets/images/spritesheets/decorationsAndBlocks.png");
+        Spritesheet gizmos = AssetPool.getSpritesheet("assets/images/gizmos.png");
+
+        gamestuff = scene.createGameObject("LevelEditor");
+        gamestuff.setNoSerialize();
+        gamestuff.addComponent(new MouseControls());//working
+        //gamestuff.addComponent(new KeyControls()); (normally allows selected units movement)
+        //gamestuff.addComponent(new GridLines()); (normally adds grid... kina obvious tbh)
+        //gamestuff.addComponent(new GizmoSystem(gizmos)); (whatever the f a gizmo is...)
+        scene.addGameObjectToScene(gamestuff);
+        //added ends
 
         GameObject cameraObject = scene.createGameObject("GameCamera");
         cameraObject.addComponent(new GameCamera(scene.camera()));

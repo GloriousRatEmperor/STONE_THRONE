@@ -1,5 +1,6 @@
 package editor;
 
+import components.Component;
 import components.NonPickable;
 import components.SpriteRenderer;
 import imgui.ImGui;
@@ -42,15 +43,19 @@ public class PropertiesWindow {
                 }
 
                 if (ImGui.menuItem("Add Box Collider")) {
-                    if (activeGameObject.getComponent(Box2DCollider.class) == null &&
-                            activeGameObject.getComponent(CircleCollider.class) == null) {
+                    if (activeGameObject.getComponent(Box2DCollider.class) == null) {
+                        if (activeGameObject.getComponent(CircleCollider.class) != null) {
+                            activeGameObject.removeComponent(CircleCollider.class);
+                        }
                         activeGameObject.addComponent(new Box2DCollider());
                     }
                 }
 
                 if (ImGui.menuItem("Add Circle Collider")) {
-                    if (activeGameObject.getComponent(CircleCollider.class) == null &&
-                            activeGameObject.getComponent(Box2DCollider.class) == null) {
+                    if (activeGameObject.getComponent(CircleCollider.class) == null){
+                        if (activeGameObject.getComponent(Box2DCollider.class) != null) {
+                            activeGameObject.removeComponent(Box2DCollider.class);
+                        }
                         activeGameObject.addComponent(new CircleCollider());
                     }
                 }
