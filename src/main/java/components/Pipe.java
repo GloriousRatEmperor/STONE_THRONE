@@ -11,6 +11,9 @@ import util.AssetPool;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Pipe extends Component {
+    public Pipe Clone(){
+        return new Pipe(this.direction);
+    }
     private Direction direction;
     private String connectingPipeName = "";
     private boolean isEntrance = false;

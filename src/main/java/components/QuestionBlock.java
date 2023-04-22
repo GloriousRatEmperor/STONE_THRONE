@@ -5,6 +5,9 @@ import jade.Prefabs;
 import jade.Window;
 
 public class QuestionBlock extends Block {
+    public QuestionBlock Clone(){
+        return new QuestionBlock();
+    }
     private enum BlockType {
         Coin,
         Powerup,

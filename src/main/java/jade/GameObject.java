@@ -6,10 +6,14 @@ import components.Component;
 import components.ComponentDeserializer;
 import components.SpriteRenderer;
 import imgui.ImGui;
+import imgui.flag.ImGuiTreeNodeFlags;
+import imgui.type.ImBoolean;
+import physics2d.components.CircleCollider;
 import util.AssetPool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class GameObject {
     private static int ID_COUNTER = 0;
@@ -84,6 +88,16 @@ public class GameObject {
             if (ImGui.collapsingHeader(c.getClass().getSimpleName()))
                 c.imgui();
         }
+    }
+    public GameObject addGui(GameObject master) {
+        for (Component c : components) {
+            if (master.getComponent(c.getClass())==null) {
+                System.out.println(c.getClass());
+                master.addComponent(c.Clone());
+            }
+        }
+        return master;
+
     }
 
     public void destroy() {

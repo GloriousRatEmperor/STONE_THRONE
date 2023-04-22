@@ -6,6 +6,9 @@ import org.joml.Vector2f;
 import util.AssetPool;
 
 public class Flagpole extends Component {
+    public Flagpole Clone(){
+        return new Flagpole(this.isTop);
+    }
     private boolean isTop = false;
 
     public Flagpole(boolean isTop) {

@@ -8,6 +8,9 @@ import org.joml.Vector2f;
 import physics2d.enums.BodyType;
 
 public class Rigidbody2D extends Component {
+    public Rigidbody2D Clone(){
+        return new Rigidbody2D();
+    }
     private Vector2f velocity = new Vector2f();
     private float angularDamping = 0.8f;
     private float linearDamping = 0.9f;

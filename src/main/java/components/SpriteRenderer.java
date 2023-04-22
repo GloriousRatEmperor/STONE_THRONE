@@ -9,6 +9,9 @@ import renderer.Texture;
 import util.AssetPool;
 
 public class SpriteRenderer extends Component {
+    public SpriteRenderer Clone(){
+        return new SpriteRenderer();
+    }
 
     private Vector4f color = new Vector4f(1, 1, 1, 1);
     private Sprite sprite = new Sprite();

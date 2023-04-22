@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class StateMachine extends Component {
+
+    public StateMachine Clone(){
+        return new StateMachine();
+    }
     private class StateTrigger {
         public String state;
         public String trigger;

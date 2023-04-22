@@ -1,5 +1,6 @@
 package editor;
 
+import components.Component;
 import components.NonPickable;
 import components.SpriteRenderer;
 import imgui.ImGui;
@@ -17,14 +18,18 @@ import renderer.PickingTexture;
 import scenes.Scene;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class Menu {
     private List<GameObject> activeGameObjects;
+    GameObject MasterObject;
     private List<Vector4f> activeGameObjectsOgColor;
     private GameObject activeGameObject = null;
+    private GameObject primairyObject = null;
     private PickingTexture pickingTexture;
 
     public Menu(PickingTexture pickingTexture) {
@@ -34,23 +39,36 @@ public class Menu {
     }
 
     public void imgui() {
-        if (activeGameObjects.size() == 1 && activeGameObjects.get(0) != null) {
-            activeGameObject = activeGameObjects.get(0);
+        if (activeGameObjects.size() > 0 && activeGameObjects.get(0) != null) {
+            primairyObject = activeGameObjects.get(0);
             imgui.ImGuiIO io = ImGui.getIO();
             ImGui.setNextWindowSize(io.getDisplaySizeX(),io.getDisplaySizeY()/4);
             ImGui.setNextWindowPos(0,io.getDisplaySizeY()*3/4);
             ImGui.begin("Menu" , ImGuiWindowFlags.MenuBar| ImGuiWindowFlags.NoResize
                     | ImGuiWindowFlags.NoTitleBar| ImGuiWindowFlags.NoCollapse| ImGuiWindowFlags.NoDecoration);
-            if (ImGui.menuItem("Add Circle Collider")) {
-                if (activeGameObject.getComponent(CircleCollider.class) == null){
-                    if (activeGameObject.getComponent(Box2DCollider.class) != null) {
-                        activeGameObject.removeComponent(Box2DCollider.class);
-                    }
-                    activeGameObject.addComponent(new CircleCollider());
+
+            ///this is how (and where) shit would be presented here for button options of the right click
+//            if (ImGui.menuItem("Add Circle Collider")) {
+//                if (activeGameObject.getComponent(CircleCollider.class) == null){
+//                    if (activeGameObject.getComponent(Box2DCollider.class) != null) {
+//                        activeGameObject.removeComponent(Box2DCollider.class);
+//                    }
+//                    activeGameObject.addComponent(new CircleCollider());
+//                }
+//            }
+            if (activeGameObjects.size() ==1){
+                primairyObject.imgui();
+            }else{
+                MasterObject=new GameObject("MasterObject");
+                for (GameObject go : activeGameObjects) {
+
+                    MasterObject=go.addGui(MasterObject);
                 }
+                MasterObject.imgui();
             }
-            activeGameObject.imgui();
+
             ImGui.end();
+
         }
     }
 

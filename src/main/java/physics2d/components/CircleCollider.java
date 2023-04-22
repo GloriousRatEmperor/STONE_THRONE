@@ -7,6 +7,9 @@ import physics2d.Physics2D;
 import renderer.DebugDraw;
 
 public class CircleCollider extends Component {
+    public CircleCollider Clone(){
+        return new CircleCollider();
+    }
     private float radius = 1f;
     private transient boolean resetFixtureNextFrame = false;
     protected Vector2f offset = new Vector2f();

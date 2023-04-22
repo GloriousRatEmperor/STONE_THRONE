@@ -3,6 +3,9 @@ package components;
 import util.AssetPool;
 
 public class BreakableBrick extends Block {
+    public BreakableBrick Clone(){
+        return new BreakableBrick();
+    }
 
     @Override
     void playerHit(PlayerController playerController) {

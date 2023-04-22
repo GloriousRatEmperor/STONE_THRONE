@@ -21,6 +21,9 @@ import util.AssetPool;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class PlayerController extends Component {
+    public PlayerController Clone(){
+        return new PlayerController();
+    }
     //PlayerController is created when a new mario is made otherwie it is included in level.txt
     //THIS FILE WAS BUTCHERED
     private enum PlayerState {

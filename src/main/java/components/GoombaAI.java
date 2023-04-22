@@ -10,7 +10,9 @@ import physics2d.components.Rigidbody2D;
 import util.AssetPool;
 
 public class GoombaAI extends Component {
-
+    public GoombaAI Clone(){
+        return new GoombaAI();
+    }
     private transient boolean goingRight = false;
     private transient Rigidbody2D rb;
     private transient float walkSpeed = 0.6f;

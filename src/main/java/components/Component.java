@@ -8,6 +8,8 @@ import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import physics2d.components.Box2DCollider;
+import physics2d.components.CircleCollider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -17,6 +19,9 @@ public abstract class Component {
     private int uid = -1;
 
     public transient GameObject gameObject = null;
+    public Component Clone(){
+        return this;
+    }
 
     public void start() {
 
@@ -46,10 +51,11 @@ public abstract class Component {
 
     }
 
-    public void imgui() {
+    public void  imgui() {
         try {
             Field[] fields = this.getClass().getDeclaredFields();
             for (Field field : fields) {
+
                 boolean isTransient = Modifier.isTransient(field.getModifiers());
                 if (isTransient) {
                     continue;

@@ -1,11 +1,15 @@
 package jade;
 
 import components.Component;
+import components.StateMachine;
 import editor.JImGui;
 import org.joml.Vector2f;
+import renderer.Texture;
 
 public class Transform extends Component {
-
+    public Transform Clone(){
+        return new Transform();
+    }
     public Vector2f position;
 
     public Vector2f scale;

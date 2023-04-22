@@ -1,6 +1,7 @@
 package components;
 
 import editor.PropertiesWindow;
+import editor.Menu;
 import jade.GameObject;
 import jade.KeyListener;
 import jade.MouseListener;
@@ -51,7 +52,7 @@ public class MouseControls extends Component {
     @Override
     public void update(float dt){
         debounce -= dt;
-        PickingTexture pickingTexture = Window.getImguiLayer().getPropertiesWindow().getPickingTexture();
+        PickingTexture pickingTexture = Window.getImguiLayer().getMenu().getPickingTexture();
         Scene currentScene = Window.getScene();
 
         if (holdingObject != null) {
@@ -72,8 +73,8 @@ public class MouseControls extends Component {
                     debounce = debounceTime;
                 }
             } else if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT)) {
-                PropertiesWindow propertiesWindow = Window.getImguiLayer().getPropertiesWindow();
-                List<GameObject> activeGameObjects = propertiesWindow.getActiveGameObjects();
+                Menu menu = Window.getImguiLayer().getMenu();
+                List<GameObject> activeGameObjects = menu.getActiveGameObjects();
                 for (GameObject go : activeGameObjects) {
                     go.transform.position.x -= Settings.GRID_HEIGHT;
                 }
@@ -88,12 +89,12 @@ public class MouseControls extends Component {
             if (pickedObj != null && pickedObj.getComponent(NonPickable.class) == null) {
                 Window.getImguiLayer().getMenu().setActiveGameObject(pickedObj);
             } else if (pickedObj == null && !MouseListener.isDragging()) {
-                Window.getImguiLayer().getPropertiesWindow().clearSelected();
+                Window.getImguiLayer().getMenu().clearSelected();
             }
             this.debounce = 0.2f;
         } else if (MouseListener.isDragging() && MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
             if (!boxSelectSet) {
-                Window.getImguiLayer().getPropertiesWindow().clearSelected();
+                Window.getImguiLayer().getMenu().clearSelected();
                 boxSelectStart = MouseListener.getScreen();
                 boxSelectSet = true;
             }
@@ -139,7 +140,7 @@ public class MouseControls extends Component {
             for (Integer gameObjectId : uniqueGameObjectIds) {
                 GameObject pickedObj = Window.getScene().getGameObject(gameObjectId);
                 if (pickedObj != null && pickedObj.getComponent(NonPickable.class) == null) {
-                    Window.getImguiLayer().getPropertiesWindow().addActiveGameObject(pickedObj);
+                    Window.getImguiLayer().getMenu().addActiveGameObject(pickedObj);
                 }
             }
         }

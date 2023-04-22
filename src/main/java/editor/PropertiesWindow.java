@@ -31,7 +31,7 @@ public class PropertiesWindow {
     }
 
     public void imgui() {
-        if (activeGameObjects.size() == 1 && activeGameObjects.get(0) != null) {
+        if (activeGameObjects.size() > 0 && activeGameObjects.get(0) != null) {
             activeGameObject = activeGameObjects.get(0);
             ImGui.begin("Properties");
 
@@ -63,7 +63,10 @@ public class PropertiesWindow {
                 ImGui.endPopup();
             }
 
-            activeGameObject.imgui();
+            for (GameObject go : activeGameObjects) {
+                go.imgui();
+
+            }
             ImGui.end();
         }
     }
@@ -93,6 +96,7 @@ public class PropertiesWindow {
     }
 
     public void setActiveGameObject(GameObject go) {
+
         if (go != null) {
             clearSelected();
             this.activeGameObjects.add(go);

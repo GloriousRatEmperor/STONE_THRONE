@@ -10,6 +10,9 @@ import physics2d.components.Rigidbody2D;
 import util.AssetPool;
 
 public class TurtleAI extends Component {
+    public TurtleAI Clone(){
+        return new TurtleAI();
+    }
     private transient boolean goingRight = false;
     private transient Rigidbody2D rb;
     private transient float walkSpeed = 0.6f;
