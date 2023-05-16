@@ -2,10 +2,7 @@ package jade;
 
 import components.*;
 import org.joml.Vector2f;
-import physics2d.components.Box2DCollider;
-import physics2d.components.CircleCollider;
-import physics2d.components.PillboxCollider;
-import physics2d.components.Rigidbody2D;
+import physics2d.components.*;
 import physics2d.enums.BodyType;
 import util.AssetPool;
 
@@ -327,7 +324,7 @@ public class Prefabs {
         circle.setRadius(0.12f);
         goomba.addComponent(circle);
 
-        goomba.addComponent(new GoombaAI());
+        goomba.addComponent(new MoveContollable());
 
         return goomba;
     }

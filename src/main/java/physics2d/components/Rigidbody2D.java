@@ -1,6 +1,9 @@
 package physics2d.components;
 
+import components.AnimationState;
 import components.Component;
+import imgui.ImGui;
+import imgui.type.ImString;
 import jade.Window;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;

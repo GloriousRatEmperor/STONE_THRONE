@@ -1,44 +1,47 @@
 package editor;
-
-import components.Component;
-import components.NonPickable;
 import components.SpriteRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import jade.GameObject;
-import jade.MouseListener;
-import observers.EventSystem;
-import observers.events.Event;
-import observers.events.EventType;
+import jade.Transform;
+import org.joml.Vector2f;
 import org.joml.Vector4f;
-import physics2d.components.Box2DCollider;
-import physics2d.components.CircleCollider;
+import physics2d.components.MoveContollable;
 import physics2d.components.Rigidbody2D;
 import renderer.PickingTexture;
-import scenes.Scene;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 public class Menu {
     private List<GameObject> activeGameObjects;
     GameObject MasterObject;
     private List<Vector4f> activeGameObjectsOgColor;
-    private GameObject activeGameObject = null;
     private GameObject primairyObject = null;
     private PickingTexture pickingTexture;
+//    private boolean IsItemActiveLastFrame()
+//    {
+//        ImGui.beginPopupContextWindow();
+//        if (g.ActiveIdPreviousFrame)
+//            return g.ActiveIdPreviousFrame == g.CurrentWindow->DC.LastItemId;
+//        return false;
+//    }
+//
+//    private boolean IsItemJustMadeInactive()
+//    {
+//        return IsItemActiveLastFrame() && !ImGui.isItemActive();
+//    }
 
     public Menu(PickingTexture pickingTexture) {
+        this.MasterObject=new GameObject("MasterObject");
         this.activeGameObjects = new ArrayList<>();
         this.pickingTexture = pickingTexture;
         this.activeGameObjectsOgColor = new ArrayList<>();
     }
 
-    public void imgui() {
+    public void imgui() throws NoSuchFieldException {
         if (activeGameObjects.size() > 0 && activeGameObjects.get(0) != null) {
             primairyObject = activeGameObjects.get(0);
             imgui.ImGuiIO io = ImGui.getIO();
@@ -59,12 +62,10 @@ public class Menu {
             if (activeGameObjects.size() ==1){
                 primairyObject.imgui();
             }else{
-                MasterObject=new GameObject("MasterObject");
-                for (GameObject go : activeGameObjects) {
 
-                    MasterObject=go.addGui(MasterObject);
-                }
-                MasterObject.imgui();
+                activeGameObjects=MasterObject.masterGui(activeGameObjects);
+
+
             }
 
             ImGui.end();
@@ -72,16 +73,12 @@ public class Menu {
         }
     }
 
-    public GameObject getActiveGameObject() {
-        return activeGameObjects.size() == 1 ? this.activeGameObjects.get(0) :
-                null;
-    }
-
     public List<GameObject> getActiveGameObjects() {
         return this.activeGameObjects;
     }
 
     public void clearSelected() {
+        this.MasterObject=new GameObject("MasterObject");
         if (activeGameObjectsOgColor.size() > 0) {
             int i = 0;
             for (GameObject go : activeGameObjects) {
@@ -100,7 +97,9 @@ public class Menu {
         if (go != null) {
             clearSelected();
             this.activeGameObjects.add(go);
+            MasterObject=go.mengui(MasterObject);
         }
+
     }
 
     public void addActiveGameObject(GameObject go) {
@@ -112,9 +111,41 @@ public class Menu {
             this.activeGameObjectsOgColor.add(new Vector4f());
         }
         this.activeGameObjects.add(go);
+        MasterObject=go.mengui(MasterObject);
+
     }
 
     public PickingTexture getPickingTexture() {
         return this.pickingTexture;
+    }
+    public void move(int x,int y){
+        for (GameObject go : activeGameObjects) {
+            Rigidbody2D body=go.getComponent(Rigidbody2D.class);
+            MoveContollable control=go.getComponent(MoveContollable.class);
+            if(body!=null&control!=null){
+                System.out.println(go.transform.position.x);
+                System.out.println(x);
+                double xS = (x) - (go.transform.position.x);
+                double yS = (y) - (go.transform.position.y);
+
+                double spdx;
+                double spdy;
+
+                if (xS == 0) {
+                    spdx = control.speed;
+                    spdy = 0;
+                }else {
+                    spdx = control.speed / sqrt(pow(yS , 2) / pow(xS,2) + 1);
+
+                if (xS < 0) {
+                    spdx *= -1;
+                };
+                    spdy = spdx * yS / xS;
+                };
+
+                body.setVelocity(new Vector2f((float) spdx, (float) spdy));
+            }
+
+        }
     }
 }

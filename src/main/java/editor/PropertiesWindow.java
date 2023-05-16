@@ -22,6 +22,7 @@ public class PropertiesWindow {
     private List<GameObject> activeGameObjects;
     private List<Vector4f> activeGameObjectsOgColor;
     private GameObject activeGameObject = null;
+    private GameObject MasterObject=new GameObject("MasterObject");
     private PickingTexture pickingTexture;
 
     public PropertiesWindow(PickingTexture pickingTexture) {
@@ -62,11 +63,14 @@ public class PropertiesWindow {
 
                 ImGui.endPopup();
             }
+            if (activeGameObjects.size() ==1){
+                activeGameObject.imgui();
+            }else{
+                activeGameObjects=MasterObject.masterGui(activeGameObjects);
 
-            for (GameObject go : activeGameObjects) {
-                go.imgui();
 
             }
+
             ImGui.end();
         }
     }
@@ -81,6 +85,7 @@ public class PropertiesWindow {
     }
 
     public void clearSelected() {
+        this.MasterObject=new GameObject("MasterObject");
         if (activeGameObjectsOgColor.size() > 0) {
             int i = 0;
             for (GameObject go : activeGameObjects) {
@@ -100,6 +105,7 @@ public class PropertiesWindow {
         if (go != null) {
             clearSelected();
             this.activeGameObjects.add(go);
+            MasterObject=go.mengui(MasterObject);
         }
     }
 
@@ -112,6 +118,7 @@ public class PropertiesWindow {
             this.activeGameObjectsOgColor.add(new Vector4f());
         }
         this.activeGameObjects.add(go);
+        MasterObject=go.mengui(MasterObject);
     }
 
     public PickingTexture getPickingTexture() {

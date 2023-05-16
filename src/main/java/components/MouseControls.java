@@ -54,34 +54,11 @@ public class MouseControls extends Component {
         debounce -= dt;
         PickingTexture pickingTexture = Window.getImguiLayer().getMenu().getPickingTexture();
         Scene currentScene = Window.getScene();
+        if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT)) {
+            Window.getImguiLayer().getMenu().move((int)MouseListener.getWorldX(),(int)MouseListener.getWorldY());
 
-        if (holdingObject != null) {
-            float x = MouseListener.getWorldX();
-            float y = MouseListener.getWorldY();
-            holdingObject.transform.position.x = ((int)Math.floor(x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) + Settings.GRID_WIDTH / 2.0f;
-            holdingObject.transform.position.y = ((int)Math.floor(y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) + Settings.GRID_HEIGHT / 2.0f;
-
-            if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
-                float halfWidth = Settings.GRID_WIDTH / 2.0f;
-                float halfHeight = Settings.GRID_HEIGHT / 2.0f;
-                if (MouseListener.isDragging() &&
-                        !blockInSquare(holdingObject.transform.position.x - halfWidth,
-                                holdingObject.transform.position.y - halfHeight)) {
-                    place();
-                } else if (!MouseListener.isDragging() && debounce < 0) {
-                    place();
-                    debounce = debounceTime;
-                }
-            } else if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT)) {
-                Menu menu = Window.getImguiLayer().getMenu();
-                List<GameObject> activeGameObjects = menu.getActiveGameObjects();
-                for (GameObject go : activeGameObjects) {
-                    go.transform.position.x -= Settings.GRID_HEIGHT;
-                }
-
-            }
-
-        } else if (!MouseListener.isDragging() && MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
+        }
+        else if (!MouseListener.isDragging() && MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
             int x = (int)MouseListener.getScreenX();
             int y = (int)MouseListener.getScreenY();
             int gameObjectId = pickingTexture.readPixel(x, y);

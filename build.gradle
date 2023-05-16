@@ -20,6 +20,7 @@ project.ext.lwjglNatives = "natives-windows"
 project.ext.imguiVersion = '1.81.0'
 
 dependencies {
+
     // Box2D
     implementation name: 'jbox2d-library'
 
@@ -31,7 +32,6 @@ dependencies {
 
     // ImGUI stuff
     implementation "io.github.spair:imgui-java-app:$imguiVersion"
-
     // LWJGL stuff
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 

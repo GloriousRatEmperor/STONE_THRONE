@@ -77,7 +77,7 @@ public class Window implements Observer {
         return currentScene;
     }
 
-    public void run() {
+    public void run() throws NoSuchFieldException {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
         init();
@@ -170,7 +170,7 @@ public class Window implements Observer {
         Window.changeScene(new LevelEditorSceneInitializer());
     }
 
-    public void loop() {
+    public void loop() throws NoSuchFieldException {
         float beginTime = (float)glfwGetTime();
         float endTime;
         float dt = -1.0f;

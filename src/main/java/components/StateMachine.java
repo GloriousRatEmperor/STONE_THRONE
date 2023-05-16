@@ -2,6 +2,7 @@ package components;
 
 import imgui.ImGui;
 import imgui.type.ImString;
+import jade.GameObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -143,6 +144,36 @@ public class StateMachine extends Component {
                 tmp[0] = frame.frameTime;
                 ImGui.dragFloat("Frame(" + index + ") Time: ", tmp, 0.01f);
                 frame.frameTime = tmp[0];
+                index++;
+            }
+        }
+    }
+    @Override
+    public List<GameObject> masterGui(List<GameObject> activegameObjects) {
+        for (AnimationState state : states) {
+            ImString title = new ImString(state.title);
+            ImGui.inputText("State: ", title);
+            state.title = title.get();
+
+            int index = 0;
+            for (Frame frame : state.animationFrames) {
+                float[] tmp = new float[1];
+                tmp[0] = frame.frameTime;
+                ImGui.dragFloat("Frame(" + index + ") Time: ", tmp, 0.01f);
+                if (frame.frameTime != tmp[0]) {
+                    frame.frameTime = tmp[0];
+                    for (GameObject go : activegameObjects) {
+                        StateMachine comp = go.getComponent(StateMachine.class);
+                        if (comp != null) {
+                            for (AnimationState cstate : comp.states) {
+                                if(title.equals(new ImString(cstate.title))) {
+                                    Frame cfram = cstate.animationFrames.get(index);
+                                    cfram.frameTime += tmp[0] - frame.frameTime;
+                                }
+                            }
+                        }
+                    }
+                }
                 index++;
             }
         }

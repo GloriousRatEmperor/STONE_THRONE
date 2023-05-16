@@ -8,17 +8,17 @@ import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import physics2d.components.Box2DCollider;
-import physics2d.components.CircleCollider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 public abstract class Component {
     private static int ID_COUNTER = 0;
     private int uid = -1;
 
     public transient GameObject gameObject = null;
+
     public Component Clone(){
         return this;
     }
@@ -51,7 +51,110 @@ public abstract class Component {
 
     }
 
-    public void  imgui() {
+
+    public List<GameObject>  masterGui(List<GameObject> activeGameObjects) {
+        try {
+            Field[] fields = this.getClass().getDeclaredFields();
+            for (Field field : fields) {
+
+                boolean isTransient = Modifier.isTransient(field.getModifiers());
+                if (isTransient) {
+                    continue;
+                }
+
+                boolean isPrivate = Modifier.isPrivate(field.getModifiers());
+                if (isPrivate) {
+                    field.setAccessible(true);
+                }
+
+                Class type = field.getType();
+                Object value = field.get(this);
+                String name = field.getName();
+                if (type == int.class) {
+                    int val = (int) value;
+
+                    int newval = JImGui.dragInt(name, val);
+                    if (val != newval) {
+                        for (GameObject go : activeGameObjects) {
+                            Component change = go.getComponent(this.getClass());
+                            if(change!=null) {
+                                Field fld = change.getClass().getDeclaredField(name);
+                                fld.set(this, (int) fld.get(this) + newval-val);
+
+                            }
+                        }
+                        field.set(this, newval);
+
+                    }
+
+                } else if (type == float.class) {
+                    float val = (float) value;
+
+                    float newval = JImGui.dragFloat(name, val);
+                    if (val != newval) {
+                        for (GameObject go : activeGameObjects) {
+                            Component change = go.getComponent(this.getClass());
+                            if(change!=null) {
+
+                                Field fld = change.getClass().getDeclaredField(name);
+                                fld.set(this, (float) fld.get(this) + newval-val);
+
+                            }
+                        }
+                        field.set(this, newval);
+
+                    }break;
+                } else if (type == boolean.class) {
+                    boolean val = (boolean) value;
+                    if (ImGui.checkbox(name + ": ", val)) {
+                        for (GameObject go : activeGameObjects) {
+                            Component change = go.getComponent(this.getClass());
+                            if(change!=null) {
+                                Field fld = change.getClass().getDeclaredField(name);
+
+                                fld.set(this, !val);
+                            }
+
+                        }
+                        field.set(this, !val);
+
+                    }
+                } else if (type == Vector2f.class) {
+                    Vector2f val = (Vector2f) value;
+                    JImGui.drawVec2Control(name, val);
+                } else if (type == Vector3f.class) {
+                    Vector3f val = (Vector3f) value;
+                    float[] imVec = {val.x, val.y, val.z};
+                    if (ImGui.dragFloat3(name + ": ", imVec)) {
+                        val.set(imVec[0], imVec[1], imVec[2]);
+                    }
+                } else if (type == Vector4f.class) {
+                    Vector4f val = (Vector4f) value;
+                    JImGui.colorPicker4(name, val);
+                } else if (type.isEnum()) {
+                    String[] enumValues = getEnumValues(type);
+                    String enumType = ((Enum) value).name();
+                    ImInt index = new ImInt(indexOf(enumType, enumValues));
+                    if (ImGui.combo(field.getName(), index, enumValues, enumValues.length)) {
+                        field.set(this, type.getEnumConstants()[index.get()]);
+                    }
+                } else if (type == String.class) {
+                    field.set(this,
+                            JImGui.inputText(field.getName() + ": ",
+                                    (String) value));
+                }
+
+
+                if (isPrivate) {
+                    field.setAccessible(false);
+                }
+            }
+        } catch (IllegalAccessException | NoSuchFieldException ex) {
+            throw new RuntimeException(ex);
+        }
+        return activeGameObjects;
+    }
+    public void  imgui(int a) {
         try {
             Field[] fields = this.getClass().getDeclaredFields();
             for (Field field : fields) {
@@ -80,6 +183,7 @@ public abstract class Component {
                     boolean val = (boolean)value;
                     if (ImGui.checkbox(name + ": ", val)) {
                         field.set(this, !val);
+
                     }
                 } else if (type == Vector2f.class) {
                     Vector2f val = (Vector2f)value;

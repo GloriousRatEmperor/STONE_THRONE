@@ -179,7 +179,7 @@ public class ImGuiLayer {
         imGuiGl3.init("#version 330 core");
     }
 
-    public void update(float dt, Scene currentScene,boolean playing) {
+    public void update(float dt, Scene currentScene,boolean playing) throws NoSuchFieldException {
         startFrame(dt);
 
         // Any Dear ImGui code SHOULD go between ImGui.newFrame()/ImGui.render() methods
