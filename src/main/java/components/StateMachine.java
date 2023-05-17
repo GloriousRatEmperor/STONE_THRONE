@@ -177,5 +177,6 @@ public class StateMachine extends Component {
                 index++;
             }
         }
+        return activegameObjects;
     }
 }

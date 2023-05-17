@@ -2,11 +2,14 @@ package components;
 
 import editor.JImGui;
 import imgui.ImGui;
+import jade.GameObject;
 import jade.Transform;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import renderer.Texture;
 import util.AssetPool;
+
+import java.util.List;
 
 public class SpriteRenderer extends Component {
     public SpriteRenderer Clone(){
@@ -48,6 +51,22 @@ public class SpriteRenderer extends Component {
         if (JImGui.colorPicker4("Color Pickier", this.color)) {
             this.isDirty = true;
         }
+    }
+    @Override
+    public List<GameObject> masterGui(List<GameObject> activegameObjects) {
+        if (JImGui.colorPicker4("Color Pickier", this.color)) {
+            this.isDirty = true;
+            for (GameObject go : activegameObjects) {
+                SpriteRenderer ccomp=go.getComponent(SpriteRenderer.class);
+                if(ccomp!=null){
+                    ccomp.color=this.color;
+                    ccomp.isDirty=true;
+                }
+
+            }
+
+        }
+        return activegameObjects;
     }
 
     public void setDirty() {

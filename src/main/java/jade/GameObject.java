@@ -85,7 +85,7 @@ public class GameObject {
     public void imgui() {
         for (Component c : components) {
             if (ImGui.collapsingHeader(c.getClass().getSimpleName()))
-                c.imgui(5);
+                c.imgui();
         }
     }
     public List<GameObject> masterGui(List<GameObject> activeGameObjects) {

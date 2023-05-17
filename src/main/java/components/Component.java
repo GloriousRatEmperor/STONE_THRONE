@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import physics2d.components.MoveContollable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -79,7 +80,16 @@ public abstract class Component {
                             Component change = go.getComponent(this.getClass());
                             if(change!=null) {
                                 Field fld = change.getClass().getDeclaredField(name);
-                                fld.set(this, (int) fld.get(this) + newval-val);
+                                boolean cisPrivate = Modifier.isPrivate(fld.getModifiers());
+                                if (cisPrivate) {
+                                    fld.setAccessible(true);
+                                }
+
+                                fld.set(change, (int) fld.get(this) + newval-val);
+
+                                if (cisPrivate) {
+                                    fld.setAccessible(false);
+                                }
 
                             }
                         }
@@ -97,7 +107,7 @@ public abstract class Component {
                             if(change!=null) {
 
                                 Field fld = change.getClass().getDeclaredField(name);
-                                fld.set(this, (float) fld.get(this) + newval-val);
+                                fld.set(change, (float) fld.get(this) + newval-val);
 
                             }
                         }
@@ -112,7 +122,7 @@ public abstract class Component {
                             if(change!=null) {
                                 Field fld = change.getClass().getDeclaredField(name);
 
-                                fld.set(this, !val);
+                                fld.set(change, !val);
                             }
 
                         }
@@ -154,7 +164,7 @@ public abstract class Component {
         }
         return activeGameObjects;
     }
-    public void  imgui(int a) {
+    public void  imgui() {
         try {
             Field[] fields = this.getClass().getDeclaredFields();
             for (Field field : fields) {

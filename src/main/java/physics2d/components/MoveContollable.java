@@ -9,5 +9,4 @@ public class MoveContollable extends Component {
     }
     public int speed=1;
 
-
 }

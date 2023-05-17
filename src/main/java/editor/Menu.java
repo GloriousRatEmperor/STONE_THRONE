@@ -106,7 +106,7 @@ public class Menu {
         SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
         if (spr != null ) {
             this.activeGameObjectsOgColor.add(new Vector4f(spr.getColor()));
-            spr.setColor(new Vector4f(0.8f, 0.8f, 0.0f, 0.8f));
+            spr.setColor(new Vector4f(spr.8f, 0.8f, 0.0f, 0.8f));
         } else {
             this.activeGameObjectsOgColor.add(new Vector4f());
         }
