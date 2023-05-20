@@ -55,7 +55,7 @@ public class MouseControls extends Component {
         PickingTexture pickingTexture = Window.getImguiLayer().getMenu().getPickingTexture();
         Scene currentScene = Window.getScene();
         if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT)) {
-            Window.getImguiLayer().getMenu().move((int)MouseListener.getWorldX(),(int)MouseListener.getWorldY());
+            Window.getImguiLayer().getMenu().move(MouseListener.getWorldX(),MouseListener.getWorldY());
 
         }
         else if (!MouseListener.isDragging() && MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {

@@ -1,6 +1,7 @@
 package editor;
 
 import imgui.ImGui;
+import imgui.ImGuiStyle;
 import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
 import jade.MouseListener;
@@ -20,6 +21,10 @@ public class GameViewWindow {
         imgui.ImGuiIO io = ImGui.getIO();
         ImGui.setNextWindowSize(io.getDisplaySizeX(),io.getDisplaySizeY());
         ImGui.setNextWindowPos(0,0);
+        ImGuiStyle style = ImGui.getStyle();
+        style.setTabBorderSize(0);
+        style.setFrameBorderSize(0);
+        style.setFramePadding(0,0);
         ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse
                         | ImGuiWindowFlags.MenuBar| ImGuiWindowFlags.NoResize| ImGuiWindowFlags.NoBringToFrontOnFocus
                         | ImGuiWindowFlags.NoTitleBar| ImGuiWindowFlags.NoCollapse| ImGuiWindowFlags.NoDecoration);

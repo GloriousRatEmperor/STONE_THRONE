@@ -25,7 +25,7 @@ public class KeyControls extends Component {
         float multiplier = KeyListener.isKeyPressed(GLFW_KEY_LEFT_SHIFT) ? 0.1f : 1.0f;
 
         if (KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) &&
-                KeyListener.keyBeginPress(GLFW_KEY_D) && activeGameObject != null) {
+                KeyListener.keyBeginPress(GLFW_KEY_F) && activeGameObject != null) {
             GameObject newObj = activeGameObject.copy();
             Window.getScene().addGameObjectToScene(newObj);
             newObj.transform.position.add(Settings.GRID_WIDTH, 0.0f);

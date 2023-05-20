@@ -9,6 +9,7 @@ import jade.MouseListener;
 import org.joml.Vector4f;
 import physics2d.components.Box2DCollider;
 import physics2d.components.CircleCollider;
+import physics2d.components.MoveContollable;
 import physics2d.components.Rigidbody2D;
 import renderer.PickingTexture;
 import scenes.Scene;
@@ -20,7 +21,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class PropertiesWindow {
     private List<GameObject> activeGameObjects;
-    private List<Vector4f> activeGameObjectsOgColor;
     private GameObject activeGameObject = null;
     private GameObject MasterObject=new GameObject("MasterObject");
     private PickingTexture pickingTexture;
@@ -28,43 +28,56 @@ public class PropertiesWindow {
     public PropertiesWindow(PickingTexture pickingTexture) {
         this.activeGameObjects = new ArrayList<>();
         this.pickingTexture = pickingTexture;
-        this.activeGameObjectsOgColor = new ArrayList<>();
     }
 
     public void imgui() {
         if (activeGameObjects.size() > 0 && activeGameObjects.get(0) != null) {
-            activeGameObject = activeGameObjects.get(0);
             ImGui.begin("Properties");
 
             if (ImGui.beginPopupContextWindow("ComponentAdder")) {
+                if (ImGui.menuItem("Add MoveControllable")) {
+                    for (GameObject go : activeGameObjects) {
+                        if (go.getComponent(MoveContollable.class) == null) {
+                            go.addComponent(new MoveContollable());
+                        }
+                    }
+                }
                 if (ImGui.menuItem("Add Rigidbody")) {
-                    if (activeGameObject.getComponent(Rigidbody2D.class) == null) {
-                        activeGameObject.addComponent(new Rigidbody2D());
+                    for (GameObject go : activeGameObjects) {
+                    if (go.getComponent(Rigidbody2D.class) == null) {
+                        go.addComponent(new Rigidbody2D());
+                    }
                     }
                 }
 
                 if (ImGui.menuItem("Add Box Collider")) {
-                    if (activeGameObject.getComponent(Box2DCollider.class) == null) {
-                        if (activeGameObject.getComponent(CircleCollider.class) != null) {
-                            activeGameObject.removeComponent(CircleCollider.class);
+                    for (GameObject go : activeGameObjects) {
+                        if (go.getComponent(Box2DCollider.class) == null) {
+
+                            if (go.getComponent(CircleCollider.class) != null) {
+                                go.removeComponent(CircleCollider.class);
+                            }
                         }
-                        activeGameObject.addComponent(new Box2DCollider());
+                        go.addComponent(new Box2DCollider());
                     }
                 }
 
+
                 if (ImGui.menuItem("Add Circle Collider")) {
-                    if (activeGameObject.getComponent(CircleCollider.class) == null){
-                        if (activeGameObject.getComponent(Box2DCollider.class) != null) {
-                            activeGameObject.removeComponent(Box2DCollider.class);
+                    for (GameObject go : activeGameObjects) {
+                        if (go.getComponent(CircleCollider.class) == null) {
+                            if (go.getComponent(Box2DCollider.class) != null) {
+                                go.removeComponent(Box2DCollider.class);
+                            }
+                            go.addComponent(new CircleCollider());
                         }
-                        activeGameObject.addComponent(new CircleCollider());
                     }
                 }
 
                 ImGui.endPopup();
             }
             if (activeGameObjects.size() ==1){
-                activeGameObject.imgui();
+                activeGameObjects.get(0).imgui();
             }else{
                 activeGameObjects=MasterObject.masterGui(activeGameObjects);
 
@@ -86,18 +99,7 @@ public class PropertiesWindow {
 
     public void clearSelected() {
         this.MasterObject=new GameObject("MasterObject");
-        if (activeGameObjectsOgColor.size() > 0) {
-            int i = 0;
-            for (GameObject go : activeGameObjects) {
-                SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-                if (spr != null) {
-                    spr.setColor(activeGameObjectsOgColor.get(i));
-                }
-                i++;
-            }
-        }
         this.activeGameObjects.clear();
-        this.activeGameObjectsOgColor.clear();
     }
 
     public void setActiveGameObject(GameObject go) {
@@ -105,18 +107,12 @@ public class PropertiesWindow {
         if (go != null) {
             clearSelected();
             this.activeGameObjects.add(go);
-            MasterObject=go.mengui(MasterObject);
         }
     }
 
     public void addActiveGameObject(GameObject go) {
         SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-        if (spr != null ) {
-            this.activeGameObjectsOgColor.add(new Vector4f(spr.getColor()));
-            spr.setColor(new Vector4f(0.8f, 0.8f, 0.0f, 0.8f));
-        } else {
-            this.activeGameObjectsOgColor.add(new Vector4f());
-        }
+
         this.activeGameObjects.add(go);
         MasterObject=go.mengui(MasterObject);
     }

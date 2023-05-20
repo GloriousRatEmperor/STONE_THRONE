@@ -106,7 +106,7 @@ public class Menu {
         SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
         if (spr != null ) {
             this.activeGameObjectsOgColor.add(new Vector4f(spr.getColor()));
-            spr.setColor(new Vector4f(spr.8f, 0.8f, 0.0f, 0.8f));
+            spr.setColor(new Vector4f(8f, 0.8f, 0.0f, 0.8f));
         } else {
             this.activeGameObjectsOgColor.add(new Vector4f());
         }
@@ -118,13 +118,11 @@ public class Menu {
     public PickingTexture getPickingTexture() {
         return this.pickingTexture;
     }
-    public void move(int x,int y){
+    public void move(float x,float y){
         for (GameObject go : activeGameObjects) {
             Rigidbody2D body=go.getComponent(Rigidbody2D.class);
             MoveContollable control=go.getComponent(MoveContollable.class);
             if(body!=null&control!=null){
-                System.out.println(go.transform.position.x);
-                System.out.println(x);
                 double xS = (x) - (go.transform.position.x);
                 double yS = (y) - (go.transform.position.y);
 
