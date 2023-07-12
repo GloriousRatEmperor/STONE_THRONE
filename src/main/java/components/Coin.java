@@ -9,6 +9,10 @@ public class Coin extends Component {
     private Vector2f topY;
     private float coinSpeed = 1.4f;
     private transient boolean playAnim = false;
+    @Override
+    public Coin Clone(){
+        return new Coin();
+    }
 
     @Override
     public void start() {

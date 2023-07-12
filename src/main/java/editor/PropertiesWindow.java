@@ -1,23 +1,20 @@
 package editor;
 
-import components.Component;
-import components.NonPickable;
+import components.Hitter;
 import components.SpriteRenderer;
+import components.Mortal;
+import components.UnitBuilder;
 import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
 import jade.GameObject;
-import jade.MouseListener;
-import org.joml.Vector4f;
 import physics2d.components.Box2DCollider;
 import physics2d.components.CircleCollider;
 import physics2d.components.MoveContollable;
 import physics2d.components.Rigidbody2D;
 import renderer.PickingTexture;
-import scenes.Scene;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class PropertiesWindow {
     private List<GameObject> activeGameObjects;
@@ -32,13 +29,35 @@ public class PropertiesWindow {
 
     public void imgui() {
         if (activeGameObjects.size() > 0 && activeGameObjects.get(0) != null) {
-            ImGui.begin("Properties");
+
+            ImGui.begin("Properties" , ImGuiWindowFlags.NoDocking);
 
             if (ImGui.beginPopupContextWindow("ComponentAdder")) {
                 if (ImGui.menuItem("Add MoveControllable")) {
                     for (GameObject go : activeGameObjects) {
                         if (go.getComponent(MoveContollable.class) == null) {
                             go.addComponent(new MoveContollable());
+                        }
+                    }
+                }
+                    if (ImGui.menuItem("Add Mortal")) {
+                        for (GameObject go : activeGameObjects) {
+                            if (go.getComponent(Mortal.class) == null) {
+                                go.addComponent(new Mortal());
+                            }
+                        }
+                    }
+                if (ImGui.menuItem("Add UnitBuilder")) {
+                    for (GameObject go : activeGameObjects) {
+                        if (go.getComponent(UnitBuilder.class) == null) {
+                            go.addComponent(new UnitBuilder());
+                        }
+                    }
+                }
+                if (ImGui.menuItem("Add Hitter")) {
+                    for (GameObject go : activeGameObjects) {
+                        if (go.getComponent(Hitter.class) == null) {
+                            go.addComponent(new Hitter());
                         }
                     }
                 }
@@ -76,20 +95,19 @@ public class PropertiesWindow {
 
                 ImGui.endPopup();
             }
-            if (activeGameObjects.size() ==1){
-                activeGameObjects.get(0).imgui();
-            }else{
-                activeGameObjects=MasterObject.masterGui(activeGameObjects);
 
 
-            }
+            activeGameObjects=MasterObject.editMasterGui(activeGameObjects);
+
+
+
 
             ImGui.end();
         }
     }
 
     public GameObject getActiveGameObject() {
-        return activeGameObjects.size() == 1 ? this.activeGameObjects.get(0) :
+        return activeGameObjects.size() > 0 ? this.activeGameObjects.get(0) :
                 null;
     }
 
@@ -107,14 +125,16 @@ public class PropertiesWindow {
         if (go != null) {
             clearSelected();
             this.activeGameObjects.add(go);
+            MasterObject=go.mengui(MasterObject);
         }
     }
 
     public void addActiveGameObject(GameObject go) {
-        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-
         this.activeGameObjects.add(go);
         MasterObject=go.mengui(MasterObject);
+    }
+    public void removeActiveGameObject(GameObject go) {
+        this.activeGameObjects.remove(go);
     }
 
     public PickingTexture getPickingTexture() {

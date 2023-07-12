@@ -99,7 +99,6 @@ public class Physics2D {
     public void setIsSensor(Rigidbody2D rb) {
         Body body = rb.getRawBody();
         if (body == null) return;
-
         Fixture fixture = body.getFixtureList();
         while (fixture != null) {
             fixture.m_isSensor = true;

@@ -22,7 +22,7 @@ public class LevelSceneInitializer extends SceneInitializer {
     @Override
     public void init(Scene scene) {
         //added this
-        Spritesheet sprites = AssetPool.getSpritesheet("assets/images/spritesheets/decorationsAndBlocks.png");
+
         Spritesheet gizmos = AssetPool.getSpritesheet("assets/images/gizmos.png");
 
         gamestuff = scene.createGameObject("LevelEditor");

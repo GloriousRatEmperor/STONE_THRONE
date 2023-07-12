@@ -25,13 +25,18 @@ public class KeyControls extends Component {
         float multiplier = KeyListener.isKeyPressed(GLFW_KEY_LEFT_SHIFT) ? 0.1f : 1.0f;
 
         if (KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) &&
-                KeyListener.keyBeginPress(GLFW_KEY_F) && activeGameObject != null) {
-            GameObject newObj = activeGameObject.copy();
-            Window.getScene().addGameObjectToScene(newObj);
-            newObj.transform.position.add(Settings.GRID_WIDTH, 0.0f);
-            propertiesWindow.setActiveGameObject(newObj);
-            if (newObj.getComponent(StateMachine.class) != null) {
-                newObj.getComponent(StateMachine.class).refreshTextures();
+                KeyListener.keyBeginPress(GLFW_KEY_V) && activeGameObject != null) {
+
+            for(int e=0;e<activeGameObjects.size();e++) {
+                GameObject go=activeGameObjects.get(0);
+                propertiesWindow.removeActiveGameObject(go);
+                GameObject newObj = go.copy();
+                Window.getScene().addGameObjectToScene(newObj);
+                newObj.transform.position.add(Settings.GRID_WIDTH, 0.0f);
+                propertiesWindow.addActiveGameObject(newObj);
+                if (newObj.getComponent(StateMachine.class) != null) {
+                    newObj.getComponent(StateMachine.class).refreshTextures();
+                }
             }
         } else if (KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) &&
                 KeyListener.keyBeginPress(GLFW_KEY_D) && activeGameObjects.size() > 1) {

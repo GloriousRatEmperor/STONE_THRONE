@@ -1,4 +1,5 @@
 package editor;
+import components.Component;
 import components.SpriteRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
@@ -59,14 +60,12 @@ public class Menu {
 //                    activeGameObject.addComponent(new CircleCollider());
 //                }
 //            }
-            if (activeGameObjects.size() ==1){
-                primairyObject.imgui();
-            }else{
-
-                activeGameObjects=MasterObject.masterGui(activeGameObjects);
-
-
+            for (GameObject go : activeGameObjects) {
+                if(go.isDead()){
+                    activeGameObjects.remove(activeGameObjects);
+                }
             }
+            MasterObject.masterGui(activeGameObjects);
 
             ImGui.end();
 

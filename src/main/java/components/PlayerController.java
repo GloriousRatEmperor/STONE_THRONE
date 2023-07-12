@@ -95,7 +95,7 @@ public class PlayerController extends Component {
                 this.rb.setVelocity(this.velocity);
                 this.rb.setAngularVelocity(0);
             } else if (!deadGoingUp && gameObject.transform.position.y <= deadMinHeight) {
-                Window.changeScene(new LevelSceneInitializer());
+                gameObject.destroy();
             }
             return;
         }
@@ -150,8 +150,7 @@ public class PlayerController extends Component {
                 this.stateMachine.trigger("stopRunning");
             }
         }
-        if (KeyListener.keyBeginPress(GLFW_KEY_E) && playerState == PlayerState.Fire &&
-                Fireball.canSpawn()) {
+        if (KeyListener.keyBeginPress(GLFW_KEY_E)) {
             Vector2f position = new Vector2f(this.gameObject.transform.position)
                     .add(this.gameObject.transform.scale.x > 0
                     ? new Vector2f(0.26f, 0)

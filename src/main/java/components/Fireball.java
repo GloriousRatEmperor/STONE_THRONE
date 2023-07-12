@@ -1,6 +1,7 @@
 package components;
 
 import jade.Camera;
+import jade.FileUtil;
 import jade.GameObject;
 import jade.Window;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -10,6 +11,10 @@ import physics2d.components.Rigidbody2D;
 
 public class Fireball extends Component {
     public transient boolean goingRight = false;
+    @Override
+    public Fireball Clone(){
+        return new Fireball();
+    }
     private transient Rigidbody2D rb;
     private transient float fireballSpeed = 1.7f;
     private transient Vector2f velocity = new Vector2f();

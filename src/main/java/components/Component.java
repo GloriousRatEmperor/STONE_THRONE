@@ -21,7 +21,7 @@ public abstract class Component {
     public transient GameObject gameObject = null;
 
     public Component Clone(){
-        return this;
+        throw new RuntimeException("you fucktart cloning dumbly dumass"+this.getClass()+" is the class you clonin and it has no clown function STUPID");
     }
 
     public void start() {
@@ -71,7 +71,9 @@ public abstract class Component {
                 Class type = field.getType();
                 Object value = field.get(this);
                 String name = field.getName();
+
                 if (type == int.class) {
+
                     int val = (int) value;
 
                     int newval = JImGui.dragInt(name, val);
@@ -98,6 +100,7 @@ public abstract class Component {
                     }
 
                 } else if (type == float.class) {
+
                     float val = (float) value;
 
                     float newval = JImGui.dragFloat(name, val);
@@ -105,15 +108,22 @@ public abstract class Component {
                         for (GameObject go : activeGameObjects) {
                             Component change = go.getComponent(this.getClass());
                             if(change!=null) {
-
                                 Field fld = change.getClass().getDeclaredField(name);
+                                boolean cprivate = Modifier.isPrivate(fld.getModifiers());
+                                if (cprivate) {
+                                    fld.setAccessible(true);
+                                }
+
                                 fld.set(change, (float) fld.get(this) + newval-val);
+                                if (cprivate) {
+                                    fld.setAccessible(false);
+                                }
 
                             }
                         }
                         field.set(this, newval);
 
-                    }break;
+                    }
                 } else if (type == boolean.class) {
                     boolean val = (boolean) value;
                     if (ImGui.checkbox(name + ": ", val)) {
@@ -146,8 +156,26 @@ public abstract class Component {
                     String enumType = ((Enum) value).name();
                     ImInt index = new ImInt(indexOf(enumType, enumValues));
                     if (ImGui.combo(field.getName(), index, enumValues, enumValues.length)) {
+
+                        for (GameObject go : activeGameObjects) {
+                            Component change = go.getComponent(this.getClass());
+                            if (change != null) {
+                                Field fld = change.getClass().getDeclaredField(name);
+                                if (isPrivate) {
+                                    fld.setAccessible(true);
+                                }
+                                fld.set(change,type.getEnumConstants()[index.get()]);
+                                if (isPrivate) {
+                                    fld.setAccessible(false);
+                                }
+
+
+
+                            }
+
+                        }
                         field.set(this, type.getEnumConstants()[index.get()]);
-                    }
+                    };
                 } else if (type == String.class) {
                     field.set(this,
                             JImGui.inputText(field.getName() + ": ",
@@ -167,8 +195,9 @@ public abstract class Component {
     public void  imgui() {
         try {
             Field[] fields = this.getClass().getDeclaredFields();
-            for (Field field : fields) {
 
+
+            for (Field field : fields) {
                 boolean isTransient = Modifier.isTransient(field.getModifiers());
                 if (isTransient) {
                     continue;
@@ -185,8 +214,10 @@ public abstract class Component {
 
                 if (type == int.class) {
                     int val = (int)value;
+
                     field.set(this, JImGui.dragInt(name, val));
                 } else if (type == float.class) {
+
                     float val = (float)value;
                     field.set(this, JImGui.dragFloat(name, val));
                 } else if (type == boolean.class) {

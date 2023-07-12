@@ -198,7 +198,6 @@ public class Prefabs {
         rb.setFixedRotation(true);
         rb.setMass(25.0f);
         mario.addComponent(rb);
-        System.out.println(5);
         mario.addComponent(new PlayerController());
 
         mario.transform.zIndex = 10;
@@ -325,6 +324,8 @@ public class Prefabs {
         goomba.addComponent(circle);
 
         goomba.addComponent(new MoveContollable());
+        goomba.addComponent(new GoombaAI());
+        goomba.addComponent(new Mortal());
 
         return goomba;
     }
@@ -383,6 +384,29 @@ public class Prefabs {
         fireball.addComponent(circleCollider);
         fireball.addComponent(new Fireball());
 
+        return fireball;
+    }
+    public static GameObject generateUnit(Vector2f position,int allied) {
+        Spritesheet items = AssetPool.getSpritesheet("assets/images/items.png");
+        GameObject fireball = generateSpriteObject(items.getSprite(32), 0.18f, 0.18f);
+        fireball.transform.position = position;
+
+        Rigidbody2D rb = new Rigidbody2D();
+        rb.setBodyType(BodyType.Dynamic);
+        rb.setFixedRotation(true);
+        rb.setContinuousCollision(false);
+        fireball.addComponent(rb);
+
+        CircleCollider circleCollider = new CircleCollider();
+        circleCollider.setRadius(0.08f);
+        fireball.addComponent(circleCollider);
+        Hitter hit=new Hitter();
+        hit.allied=allied;
+        fireball.addComponent(hit);
+        Mortal mortal=new Mortal();
+        mortal.allied=allied;
+        fireball.addComponent(mortal);
+        fireball.addComponent(new MoveContollable());
         return fireball;
     }
 

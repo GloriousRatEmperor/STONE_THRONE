@@ -4,12 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import components.Component;
 import components.ComponentDeserializer;
+import components.Sprite;
 import components.SpriteRenderer;
 import imgui.ImGui;
-import imgui.flag.ImGuiTreeNodeFlags;
-import physics2d.components.CircleCollider;
+import org.joml.Vector2f;
 import util.AssetPool;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,12 +85,27 @@ public class GameObject {
     }
 
     public void imgui() {
+        if(this.getComponent(SpriteRenderer.class)!=null) {
+            Sprite sprite= this.getComponent(SpriteRenderer.class).getSprite();
+        }
         for (Component c : components) {
             if (ImGui.collapsingHeader(c.getClass().getSimpleName()))
                 c.imgui();
         }
     }
     public List<GameObject> masterGui(List<GameObject> activeGameObjects) {
+        if(this.getComponent(SpriteRenderer.class)!=null) {
+            Sprite sprite= this.getComponent(SpriteRenderer.class).getSprite();
+            Vector2f[] texCoords = sprite.getTexCoords();
+            ImGui.image(sprite.getTexture().getId(), 200, 200,texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y);
+        }
+//        for (Component c : components) {
+//            if (ImGui.collapsingHeader(c.getClass().getSimpleName()))
+//                activeGameObjects=c.masterGui(activeGameObjects);
+//        }
+        return activeGameObjects;
+    }
+    public List<GameObject> editMasterGui(List<GameObject> activeGameObjects) {
         for (Component c : components) {
             if (ImGui.collapsingHeader(c.getClass().getSimpleName()))
                 activeGameObjects=c.masterGui(activeGameObjects);
@@ -98,23 +115,36 @@ public class GameObject {
     public GameObject mengui(GameObject master) {
         for (Component c : components) {
             if (master.getComponent(c.getClass())==null){
-                master.addComponent(c.Clone());
-            }
-        }
-        return master;
-    }
-    public GameObject addGui(GameObject master) {
-        for (Component c : components) {
-            if (master.getComponent(c.getClass())==null) {
-                System.out.println(c.getClass());
-                master.addComponent(c.Clone());
-            }
-        }
-        return master;
+                Component clone=c.Clone();
+                Field[] fields = c.getClass().getDeclaredFields();
+                try{
+                for (Field field : fields) {
+                    boolean isTransient = Modifier.isTransient(field.getModifiers());
+                    if (isTransient) {
+                        continue;
+                    }
 
+                    boolean isPrivate = Modifier.isPrivate(field.getModifiers());
+                    if (isPrivate) {
+                        field.setAccessible(true);
+                    }
+                    Object value = field.get(c);
+                    field.set(clone, value);
+                    if (isPrivate) {
+                        field.setAccessible(false);
+                    }
+                }
+                } catch (IllegalAccessException ex) {
+                    throw new RuntimeException(ex);
+                }
+                master.addComponent(clone);
+            }
+        }
+        return master;
     }
 
     public void destroy() {
+
         this.isDead = true;
         for (int i=0; i < components.size(); i++) {
             components.get(i).destroy();

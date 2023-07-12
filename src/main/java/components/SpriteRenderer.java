@@ -84,6 +84,9 @@ public class SpriteRenderer extends Component {
     public Vector2f[] getTexCoords() {
         return sprite.getTexCoords();
     }
+    public Sprite getSprite() {
+        return this.sprite;
+    }
 
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
