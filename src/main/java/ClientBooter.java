@@ -7,7 +7,9 @@ public class ClientBooter {
 
         String adress=args[0];
         new Client(adress);
+
         Window window = Window.get();
         window.run();
+
     }
 }
