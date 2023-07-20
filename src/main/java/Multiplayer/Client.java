@@ -1,39 +1,26 @@
 package Multiplayer;
 
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class Client {
-    public Client(String host) throws Exception {
-        int port = 8080;
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+public class Client extends ChannelInboundHandlerAdapter {
 
-        try {
-            Bootstrap b = new Bootstrap();
-            b.group(workerGroup);
-            b.channel(NioSocketChannel.class);
-            b.option(ChannelOption.SO_KEEPALIVE, true);
-            b.handler(new ChannelInitializer<SocketChannel>() {
+    @Override
+    public void channelActive(ChannelHandlerContext ctx)
+            throws Exception {
 
-                @Override
-                public void initChannel(SocketChannel ch)
-                        throws Exception {
-                    ch.pipeline().addLast(new ClientEncoder(),
-                            new ClientDecoder(), new ClientHelper());
-                }
-            });
+        ClientData msg = new ClientData();
+        msg.setIntValue(123);
+        msg.setStrValue(
+                "all work and no play makes jack a dull boy");
+        ChannelFuture future = ctx.writeAndFlush(msg);
+    }
 
-            ChannelFuture f = b.connect(host, port).sync();
-
-            f.channel().closeFuture().sync();
-        } finally {
-            workerGroup.shutdownGracefully();
-        }
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg)
+            throws Exception {
+        System.out.println((ServerData)msg);
+        ctx.close();
     }
 }
