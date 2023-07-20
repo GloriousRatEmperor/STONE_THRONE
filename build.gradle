@@ -21,6 +21,7 @@ project.ext.lwjglNatives = "natives-windows"
 project.ext.imguiVersion = '1.81.0'
 
 dependencies {
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.94.Final'
 
     // Box2D

@@ -15,7 +15,7 @@ public class Processor extends ChannelInboundHandlerAdapter {
         ServerData ServerData = new ServerData();
         ServerData.setIntValue(ClientData.getIntValue() * 2);
         ChannelFuture future = ctx.writeAndFlush(ServerData);
-        future.addListener(ChannelFutureListener.CLOSE);
-        System.out.println(ClientData);
+        future.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+
     }
 }

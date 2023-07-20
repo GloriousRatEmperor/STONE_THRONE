@@ -1,4 +1,4 @@
-import Multiplayer.Server;
+import Multiplayer.TechnicalServer;
 import jade.Window;
 
 public class ServerBooter {
@@ -6,7 +6,7 @@ public class ServerBooter {
 
         int port = args.length > 0 ? Integer.parseInt(args[0]) : 8080;
 
-        new Server(port).run();
+        new TechnicalServer(port).run();
         Window window = Window.get();
         window.run();
     }
