@@ -7,6 +7,6 @@ public class MoveContollable extends Component {
     public MoveContollable Clone(){
         return new MoveContollable();
     }
-    public int speed=1;
+    public int speed=10;
 
 }

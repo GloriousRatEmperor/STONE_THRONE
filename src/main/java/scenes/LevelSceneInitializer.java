@@ -1,5 +1,7 @@
 package scenes;
 
+import Multiplayer.ClientData;
+import Multiplayer.ServerData;
 import components.*;
 import imgui.ImGui;
 import imgui.ImVec2;
@@ -12,11 +14,17 @@ import util.AssetPool;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
 
 public class LevelSceneInitializer extends SceneInitializer {
     private GameObject gamestuff;
-    public LevelSceneInitializer() {
-
+    private Thread clientThread;
+    private BlockingQueue<ClientData> requests;
+    private BlockingQueue<ServerData> responses;
+    public LevelSceneInitializer(Thread clientThread,BlockingQueue<ClientData> requests,BlockingQueue<ServerData> responses) {
+        this.clientThread=clientThread;
+        this.requests=requests;
+        this.responses=responses;
     }
 
     @Override
@@ -27,10 +35,11 @@ public class LevelSceneInitializer extends SceneInitializer {
 
         gamestuff = scene.createGameObject("LevelEditor");
         gamestuff.setNoSerialize();
-        gamestuff.addComponent(new MouseControls());//working
+        gamestuff.addComponent(new MouseControls(clientThread,requests));//working
         //gamestuff.addComponent(new KeyControls()); (normally allows selected units movement)
         //gamestuff.addComponent(new GridLines()); (normally adds grid... kina obvious tbh)
-        //gamestuff.addComponent(new GizmoSystem(gizmos)); (whatever the f a gizmo is...)
+        gamestuff.addComponent(new GizmoSystem(gizmos)); //(whatever the f a gizmo is...) #NEW WARNING
+        gamestuff.addComponent(new ServerInputs(clientThread,responses));
         scene.addGameObjectToScene(gamestuff);
         //added ends
 

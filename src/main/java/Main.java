@@ -1,3 +1,4 @@
+import Multiplayer.Server;
 import jade.Window;
 
 public class Main {
