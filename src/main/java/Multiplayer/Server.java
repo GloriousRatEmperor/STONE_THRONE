@@ -33,8 +33,7 @@ public class Server extends ChannelInboundHandlerAdapter {
             sendData.setIntValue(tmp.readInt());
             ServerData recieveData = new ServerData();
             recieveData.setIntValue(sendData.getIntValue() * 2);
-            ChannelFuture future = ctx.writeAndFlush(recieveData);
-            future.addListener(ChannelFutureListener.CLOSE);
+            ctx.writeAndFlush(recieveData);
         }
     }
 }

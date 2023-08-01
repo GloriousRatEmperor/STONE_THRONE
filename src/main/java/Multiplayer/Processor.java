@@ -2,15 +2,13 @@ package Multiplayer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.*;
 import jade.GameObject;
 
 import java.util.ArrayList;
-
+@ChannelHandler.Sharable
 public class Processor extends ChannelInboundHandlerAdapter {
+
     private ArrayList<ChannelHandlerContext> ctxlist=new ArrayList<>();
 
     @Override

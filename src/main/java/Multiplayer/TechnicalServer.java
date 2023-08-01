@@ -21,6 +21,7 @@ public class TechnicalServer {
     public void run() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        Processor processor=new Processor();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
@@ -31,7 +32,7 @@ public class TechnicalServer {
                                 throws Exception {
                             ch.pipeline().addLast(new ServerDecoder(),
                                     new Responder(),
-                                    new Processor());
+                                    processor);
                         }
                     }).option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
