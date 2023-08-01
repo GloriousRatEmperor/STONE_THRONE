@@ -1,5 +1,8 @@
 package Multiplayer;
 
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,10 +12,27 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public class TechnicalClient {
-    public TechnicalClient(String host) throws Exception {
+import org.junit.runner.Request;
+
+import java.util.Objects;
+import java.util.concurrent.BlockingQueue;
+
+public class TechnicalClient implements Runnable{
+    String host;
+    BlockingQueue<ClientData> requests;
+    BlockingQueue<ServerData> responses;
+    public TechnicalClient(String host, BlockingQueue<ClientData> requests, BlockingQueue<ServerData> responses){
+        this.host=host;
+        this.requests=requests;
+        this.responses=responses;
+
+    }
+
+    @Override
+    public void run() {
         int port = 8080;
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        Client client= new Client(responses);
 
         try {
             Bootstrap b = new Bootstrap();
@@ -25,15 +45,29 @@ public class TechnicalClient {
                 public void initChannel(SocketChannel ch)
                         throws Exception {
                     ch.pipeline().addLast(new ClientEncoder(),
-                            new ClientDecoder(), new Client());
+
+                            new ClientDecoder(), client);
+
                 }
             });
 
             ChannelFuture f = b.connect(host, port).sync();
 
-            f.channel().closeFuture().sync();
+            while (true) {
+                ClientData request;
+                    while (!Objects.equals((request = requests.take()).getName(), "exit")) {
+                        client.toServer(request);
+                    }
+
+            }
+
+            //f.channel().closeFuture().sync();
+        } catch (InterruptedException | JsonProcessingException e) {
+            throw new RuntimeException(e);
         } finally {
             workerGroup.shutdownGracefully();
         }
+
+
     }
 }

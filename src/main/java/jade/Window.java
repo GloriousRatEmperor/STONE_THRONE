@@ -1,10 +1,10 @@
 package jade;
 
-import editor.GameViewWindow;
+import Multiplayer.ClientData;
+import Multiplayer.ServerData;
 import observers.EventSystem;
 import observers.Observer;
 import observers.events.Event;
-import observers.events.EventType;
 import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -22,6 +22,8 @@ import scenes.Scene;
 import scenes.SceneInitializer;
 import util.AssetPool;
 
+import java.util.concurrent.BlockingQueue;
+
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.openal.ALC10.*;
@@ -29,6 +31,9 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window implements Observer {
+    public Thread clientThread;
+    public BlockingQueue<ClientData> requests;
+    public BlockingQueue<ServerData> responses;
     private int width, height;
     private String title;
     private long glfwWindow;
@@ -146,9 +151,7 @@ public class Window implements Observer {
         ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
         ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
 
-        if (!alCapabilities.OpenAL10) {
-            assert false : "Audio library not supported.";
-        }
+        assert alCapabilities.OpenAL10 : "Audio library not supported.";
 
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
@@ -167,7 +170,7 @@ public class Window implements Observer {
         this.imguiLayer = new ImGuiLayer(glfwWindow, pickingTexture);
         this.imguiLayer.initImGui();
 
-        Window.changeScene(new LevelEditorSceneInitializer());
+        Window.changeScene(new LevelEditorSceneInitializer(clientThread,requests,responses));
     }
 
     public void loop() throws NoSuchFieldException {
@@ -255,26 +258,20 @@ public class Window implements Observer {
     public static ImGuiLayer getImguiLayer() {
         return get().imguiLayer;
     }
-
     @Override
     public void onNotify(GameObject object, Event event) {
         switch (event.type) {
-            case GameEngineStartPlay:
+            case GameEngineStartPlay -> {
                 this.runtimePlaying = true;
-
                 currentScene.save(false);
-                Window.changeScene(new LevelSceneInitializer());
-                break;
-            case GameEngineStopPlay:
+                Window.changeScene(new LevelSceneInitializer(clientThread, requests,responses));
+            }
+            case GameEngineStopPlay -> {
                 this.runtimePlaying = false;
-                Window.changeScene(new LevelEditorSceneInitializer());
-                break;
-            case LoadLevel:
-                Window.changeScene(new LevelEditorSceneInitializer());
-                break;
-            case SaveLevel:
-                currentScene.save(true);
-                break;
+                Window.changeScene(new LevelEditorSceneInitializer(clientThread,requests,responses));
+            }
+            case LoadLevel -> Window.changeScene(new LevelEditorSceneInitializer(clientThread,requests,responses));
+            case SaveLevel -> currentScene.save(true);
         }
     }
 }

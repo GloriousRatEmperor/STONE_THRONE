@@ -4,11 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import components.Component;
 import components.ComponentDeserializer;
+import components.NonPickable;
 import imgui.ImGui;
-import jade.Camera;
-import jade.GameObject;
-import jade.GameObjectDeserializer;
-import jade.Transform;
+import jade.*;
 import org.joml.Vector2f;
 import physics2d.Physics2D;
 import renderer.Renderer;
@@ -95,6 +93,17 @@ public class Scene {
                 .findFirst();
         return result.orElse(null);
     }
+    public ArrayList<GameObject> getGameObjects(List<Integer> gameObjectIds) {
+        ArrayList<GameObject> selected= new ArrayList<>();
+        for (Integer gameObjectId : gameObjectIds) {
+            GameObject pickedObj = getGameObject(gameObjectId);
+            if (pickedObj != null && pickedObj.getComponent(NonPickable.class) == null) {
+                selected.add(pickedObj);
+            }
+        }
+        return selected;
+    }
+
 
     public void editorUpdate(float dt) {
         this.camera.adjustProjection();

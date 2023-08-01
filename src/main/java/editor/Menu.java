@@ -21,6 +21,7 @@ public class Menu {
     GameObject MasterObject;
     private List<Vector4f> activeGameObjectsOgColor;
     private GameObject primairyObject = null;
+    private List<Integer> ids;
     private PickingTexture pickingTexture;
 //    private boolean IsItemActiveLastFrame()
 //    {
@@ -37,6 +38,7 @@ public class Menu {
 
     public Menu(PickingTexture pickingTexture) {
         this.MasterObject=new GameObject("MasterObject");
+        this.ids=new ArrayList<>();
         this.activeGameObjects = new ArrayList<>();
         this.pickingTexture = pickingTexture;
         this.activeGameObjectsOgColor = new ArrayList<>();
@@ -78,6 +80,7 @@ public class Menu {
 
     public void clearSelected() {
         this.MasterObject=new GameObject("MasterObject");
+        this.ids=new ArrayList<>();
         if (activeGameObjectsOgColor.size() > 0) {
             int i = 0;
             for (GameObject go : activeGameObjects) {
@@ -97,6 +100,7 @@ public class Menu {
             clearSelected();
             this.activeGameObjects.add(go);
             MasterObject=go.mengui(MasterObject);
+            ids.add(go.getUid());
         }
 
     }
@@ -111,14 +115,23 @@ public class Menu {
         }
         this.activeGameObjects.add(go);
         MasterObject=go.mengui(MasterObject);
+        ids.add(go.getUid());
 
     }
 
     public PickingTexture getPickingTexture() {
         return this.pickingTexture;
     }
-    public void move(float x,float y){
-        for (GameObject go : activeGameObjects) {
+
+    public List<Integer> getIds(){return ids;}
+
+
+
+    public void move(float x,float y,ArrayList<GameObject> gameObjects){
+
+
+
+        for (GameObject go : gameObjects) {
             Rigidbody2D body=go.getComponent(Rigidbody2D.class);
             MoveContollable control=go.getComponent(MoveContollable.class);
             if(body!=null&control!=null){

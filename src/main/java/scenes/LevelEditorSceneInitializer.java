@@ -1,5 +1,7 @@
 package scenes;
 
+import Multiplayer.ClientData;
+import Multiplayer.ServerData;
 import components.*;
 import imgui.ImGui;
 import imgui.ImVec2;
@@ -12,13 +14,19 @@ import util.AssetPool;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
 
 public class LevelEditorSceneInitializer extends SceneInitializer {
 
     private Spritesheet sprites;
     private GameObject levelEditorStuff;
-
-    public LevelEditorSceneInitializer() {
+    private BlockingQueue<ClientData> requests;
+    private BlockingQueue<ServerData> responses;
+    private Thread clientThread;
+    public LevelEditorSceneInitializer(Thread clientThread,BlockingQueue<ClientData> requests,BlockingQueue<ServerData> responses) {
+        this.clientThread=clientThread;
+        this.requests=requests;
+        this.responses=responses;
 
     }
 
@@ -29,8 +37,9 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
         levelEditorStuff = scene.createGameObject("LevelEditor");
         levelEditorStuff.setNoSerialize();
-        levelEditorStuff.addComponent(new MouseControls());
-        levelEditorStuff.addComponent(new KeyControls());
+        levelEditorStuff.addComponent(new MouseControls(clientThread,requests));
+        levelEditorStuff.addComponent(new KeyControls(clientThread,requests));
+        levelEditorStuff.addComponent(new ServerInputs(clientThread,responses));
         levelEditorStuff.addComponent(new GridLines());
         levelEditorStuff.addComponent(new EditorCamera(scene.camera()));
         levelEditorStuff.addComponent(new GizmoSystem(gizmos));

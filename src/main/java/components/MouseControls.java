@@ -1,5 +1,6 @@
 package components;
 
+import Multiplayer.ClientData;
 import editor.PropertiesWindow;
 import editor.Menu;
 import jade.GameObject;
@@ -15,9 +16,11 @@ import renderer.PickingTexture;
 import scenes.Scene;
 import util.Settings;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -29,7 +32,12 @@ public class MouseControls extends Component {
     private boolean boxSelectSet = false;
     private Vector2f boxSelectStart = new Vector2f();
     private Vector2f boxSelectEnd = new Vector2f();
-
+    private Thread clientThread;
+    private BlockingQueue<ClientData> requests;
+    public MouseControls(Thread clientThread, BlockingQueue<ClientData> requests){
+    this.clientThread=clientThread;
+    this.requests=requests;
+    }
     public void pickupObject(GameObject go) {
         if (this.holdingObject != null) {
             this.holdingObject.destroy();
@@ -55,7 +63,17 @@ public class MouseControls extends Component {
         PickingTexture pickingTexture = Window.getImguiLayer().getMenu().getPickingTexture();
         Scene currentScene = Window.getScene();
         if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT)) {
-            Window.getImguiLayer().getMenu().move(MouseListener.getWorldX(),MouseListener.getWorldY());
+            ClientData clientData=new ClientData();
+            clientData.setName("Move");
+
+            clientData.setGameObjects(Window.getImguiLayer().getMenu().getIds());
+            List<Float> position=new ArrayList<>();
+            position.add(MouseListener.getWorldX());
+            position.add(MouseListener.getWorldY());
+            clientData.setPos(position);
+            requests.add(clientData);
+
+
 
         }
         else if (!MouseListener.isDragging() && MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {

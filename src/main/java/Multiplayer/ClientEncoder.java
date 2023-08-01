@@ -1,5 +1,6 @@
 package Multiplayer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -11,13 +12,13 @@ public class ClientEncoder
         extends MessageToByteEncoder<ClientData> {
 
     private final Charset charset = StandardCharsets.UTF_8;
+    ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void encode(ChannelHandlerContext ctx,
                           ClientData msg, ByteBuf out) throws Exception {
-
-        out.writeInt(msg.getIntValue());
-        out.writeInt(msg.getStrValue().length());
-        out.writeCharSequence(msg.getStrValue(), charset);
+        String msgString=mapper.writeValueAsString(msg);
+        out.writeInt(msgString.length());
+        out.writeCharSequence(msgString, charset);
     }
 }

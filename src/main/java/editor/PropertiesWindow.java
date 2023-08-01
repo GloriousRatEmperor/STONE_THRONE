@@ -20,6 +20,7 @@ public class PropertiesWindow {
     private List<GameObject> activeGameObjects;
     private GameObject activeGameObject = null;
     private GameObject MasterObject=new GameObject("MasterObject");
+    private List<Integer> ids=new ArrayList<>();
     private PickingTexture pickingTexture;
 
     public PropertiesWindow(PickingTexture pickingTexture) {
@@ -117,6 +118,7 @@ public class PropertiesWindow {
 
     public void clearSelected() {
         this.MasterObject=new GameObject("MasterObject");
+        this.ids=new ArrayList<>();
         this.activeGameObjects.clear();
     }
 
@@ -126,12 +128,14 @@ public class PropertiesWindow {
             clearSelected();
             this.activeGameObjects.add(go);
             MasterObject=go.mengui(MasterObject);
+            ids.add(go.getUid());
         }
     }
 
     public void addActiveGameObject(GameObject go) {
         this.activeGameObjects.add(go);
         MasterObject=go.mengui(MasterObject);
+        ids.add(go.getUid());
     }
     public void removeActiveGameObject(GameObject go) {
         this.activeGameObjects.remove(go);

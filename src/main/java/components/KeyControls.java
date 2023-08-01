@@ -1,5 +1,6 @@
 package components;
 
+import Multiplayer.ClientData;
 import editor.PropertiesWindow;
 import jade.GameObject;
 import jade.KeyListener;
@@ -8,12 +9,19 @@ import util.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyControls extends Component {
     private float debounceTime = 0.2f;
     private float debounce = 0.0f;
+    private BlockingQueue<ClientData> requests;
+    private Thread clientThread;
+    public KeyControls(Thread clientThread, BlockingQueue<ClientData> requests) {
+        this.clientThread=clientThread;
+        this.requests=requests;
+    }
 
     @Override
     public void editorUpdate(float dt) {
