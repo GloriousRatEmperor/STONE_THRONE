@@ -1,48 +1,40 @@
 package Multiplayer;
 
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
-import java.security.PublicKey;
+public class Server extends ChannelInboundHandlerAdapter {
+    private ByteBuf tmp;
 
-public class Server {
-
-    private final int port;
-
-    // constructor
-    public Server(int port){
-        this.port=port;
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) {
+        System.out.println("Handler added");
+        tmp = ctx.alloc().buffer(4);
     }
 
-    public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel ch)
-                                throws Exception {
-                            ch.pipeline().addLast(new ServerDecoder(),
-                                    new Responder(),
-                                    new Processor());
-                        }
-                    }).option(ChannelOption.SO_BACKLOG, 128)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) {
+        System.out.println("Handler removed");
+        tmp.release();
+        tmp = null;
+    }
 
-            ChannelFuture f = b.bind(port).sync();
-            f.channel().closeFuture().sync();
-        } finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        ByteBuf m = (ByteBuf) msg;
+        tmp.writeBytes(m);
+        m.release();
+        if (tmp.readableBytes() >= 4) {
+            // request processing
+            ClientData sendData = new ClientData();
+            sendData.setIntValue(tmp.readInt());
+            ServerData recieveData = new ServerData();
+            recieveData.setIntValue(sendData.getIntValue() * 2);
+            ChannelFuture future = ctx.writeAndFlush(recieveData);
+            future.addListener(ChannelFutureListener.CLOSE);
         }
     }
 }
