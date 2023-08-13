@@ -136,6 +136,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
             // TODO: get better solution for this
             if (spr.gameObject.transform.zIndex != this.zIndex) {
+                System.out.println(2);
                 destroyIfExists(spr.gameObject);
                 renderer.add(spr.gameObject);
                 i--;

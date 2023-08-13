@@ -36,11 +36,12 @@ public class Rigidbody2D extends Component {
         Vector2f acceleration = new Vector2f(forceAccum).mul(this.inverseMass);
         linearVelocity.add(acceleration.mul(dt));
 
-        // Update the linear position
-        this.position.add(new Vector2f(linearVelocity).mul(dt));
-
         synchCollisionTransforms();
         clearAccumulators();
+    }
+    public void positionUpdate(float dt) {
+        // Update the linear position
+        this.position.add(new Vector2f(linearVelocity).mul(dt));
     }
 
     public void synchCollisionTransforms() {

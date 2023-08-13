@@ -6,6 +6,7 @@ import java.util.List;
 
 public class ServerData {
     public int intValue;
+    public float time;
     public String name;
     public int getIntValue(){
         return intValue;

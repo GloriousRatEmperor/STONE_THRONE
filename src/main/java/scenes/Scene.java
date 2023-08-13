@@ -138,6 +138,7 @@ public class Scene {
 
     public void update(float dt) {
         this.camera.adjustProjection();
+
         this.physics2D.update(dt);
 
         for (int i=0; i < gameObjects.size(); i++) {
@@ -159,6 +160,11 @@ public class Scene {
             this.physics2D.add(go);
         }
         pendingObjects.clear();
+    }
+    public void visualUpdate(float dt) {
+        this.camera.adjustProjection();
+
+        this.physics2D.visualUpdate(dt);
     }
 
     public void render() {

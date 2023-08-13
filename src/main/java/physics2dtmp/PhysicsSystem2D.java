@@ -36,6 +36,7 @@ public class PhysicsSystem2D {
     }
 
     public void update(float dt) {
+        System.out.println(11);
         fixedUpdate();
     }
 
@@ -90,6 +91,12 @@ public class PhysicsSystem2D {
         }
 
         // Apply linear projection
+    }
+    public void Updatepos(float dt){
+        // Update the position
+        for (int i=0; i < rigidbodies.size(); i++) {
+            rigidbodies.get(i).positionUpdate(dt);
+        }
     }
 
     private void applyImpulse(Rigidbody2D a, Rigidbody2D b, CollisionManifold m) {

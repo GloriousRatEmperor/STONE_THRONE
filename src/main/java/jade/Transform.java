@@ -14,6 +14,7 @@ public class Transform extends Component {
         return new Transform();
     }
     public Vector2f position;
+    public Vector2f futurePosition;
 
     public Vector2f scale;
     public float rotation = 0.0f;
@@ -33,6 +34,7 @@ public class Transform extends Component {
 
     public void init(Vector2f position, Vector2f scale) {
         this.position = position;
+        this.futurePosition = position;
         this.scale = scale;
         this.zIndex = 0;
     }
@@ -62,6 +64,8 @@ public class Transform extends Component {
 
                     ccomp.position.x-=pos.x-this.position.x;
                     ccomp.position.y-=pos.y-this.position.y;
+                    ccomp.futurePosition.x-=pos.x-this.position.x;
+                    ccomp.futurePosition.y-=pos.y-this.position.y;
                 }
             }
         }

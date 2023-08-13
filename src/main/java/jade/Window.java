@@ -177,6 +177,10 @@ public class Window implements Observer {
         float beginTime = (float)glfwGetTime();
         float endTime;
         float dt = -1.0f;
+        boolean doPhysics = false;
+        float lastPhysics = -1.0f;
+        float physicsInterval = 1/30f;
+        float physicsTime=0.0f;
 
         Shader defaultShader = AssetPool.getShader("assets/shaders/default.glsl");
         Shader pickingShader = AssetPool.getShader("assets/shaders/pickingShader.glsl");
@@ -207,19 +211,29 @@ public class Window implements Observer {
             glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            if (dt >= 0) {
-                Renderer.bindShader(defaultShader);
+            //if (dt >= 0) { this prevents the thing from happening once in the beginning but it looks useless
+
+            //the only actual non render stuff methinks
+
+            Renderer.bindShader(defaultShader);
+            while(physicsTime>0.0f) {
                 if (runtimePlaying) {
-                    currentScene.update(dt);
+                    currentScene.update(physicsInterval);
                 } else {
-                    currentScene.editorUpdate(dt);
+                    currentScene.editorUpdate(physicsInterval);
                 }
-                currentScene.render();
-                DebugDraw.draw();
+                physicsTime-=physicsInterval;
             }
+            currentScene.visualUpdate(dt);
+            currentScene.render();
+            DebugDraw.draw();
+
+
+            //} this prevents the thing from happening once in the beginning, but it looks useless
+
             this.framebuffer.unbind();
 
-            this.imguiLayer.update(dt, currentScene,runtimePlaying);
+            this.imguiLayer.update(currentScene,runtimePlaying);
 
             KeyListener.endFrame();
             MouseListener.endFrame();
@@ -228,6 +242,14 @@ public class Window implements Observer {
             endTime = (float)glfwGetTime();
             dt = endTime - beginTime;
             beginTime = endTime;
+
+            while(endTime-lastPhysics>physicsInterval) {
+                lastPhysics = lastPhysics + physicsInterval;
+                physicsTime+=physicsInterval;
+                dt = endTime - lastPhysics;
+                doPhysics = true;
+            }
+
         }
     }
 

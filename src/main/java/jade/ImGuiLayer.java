@@ -179,8 +179,8 @@ public class ImGuiLayer {
         imGuiGl3.init("#version 330 core");
     }
 
-    public void update(float dt, Scene currentScene,boolean playing) throws NoSuchFieldException {
-        startFrame(dt);
+    public void update(Scene currentScene,boolean playing) throws NoSuchFieldException {
+        startFrame();
 
         // Any Dear ImGui code SHOULD go between ImGui.newFrame()/ImGui.render() methods
         setupDockspace();
@@ -197,7 +197,7 @@ public class ImGuiLayer {
         endFrame();
     }
 
-    private void startFrame(final float deltaTime) {
+    private void startFrame() {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
     }
